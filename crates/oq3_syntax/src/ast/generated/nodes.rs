@@ -394,8 +394,11 @@ impl Measure {
     pub fn measure_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![measure])
     }
-    pub fn qubit(&self) -> Option<Expr> {
+    pub fn expr(&self) -> Option<Expr> {
         support::child(&self.syntax)
+    }
+    pub fn thin_arrow_token(&self) -> Option<SyntaxToken> {
+        support::token(&self.syntax, T![->])
     }
     pub fn semicolon_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, T![;])

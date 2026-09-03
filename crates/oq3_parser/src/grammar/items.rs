@@ -91,6 +91,7 @@ pub(super) fn opt_item(p: &mut Parser<'_>, m: Marker) -> Result<(), Marker> {
         T![cal] => cal_(p, m),
         T![defcalgrammar] => defcalgrammar_(p, m),
         T![extern] => extern_stmt(p, m),
+        T![measure] => measure_stmt(p, m),
         T![reset] => reset_stmt(p, m),
         T![barrier] => barrier_(p, m),
         T![OPENQASM] => version_string(p, m),
@@ -102,6 +103,20 @@ pub(super) fn opt_item(p: &mut Parser<'_>, m: Marker) -> Result<(), Marker> {
         _ => return Err(m),
     }
     Ok(())
+}
+
+/// Parses both `measure q;` and the OpenQASM 2-compatible
+/// `measure q -> c;` statement form retained by OpenQASM 3.
+fn measure_stmt(p: &mut Parser<'_>, m: Marker) {
+    p.bump(T![measure]);
+    let operand = p.start();
+    params::arg_gate_call_qubit(p, operand);
+    if p.eat(T![->]) {
+        let target = p.start();
+        params::arg_gate_call_qubit(p, target);
+    }
+    p.expect(T![;]);
+    m.complete(p, MEASURE);
 }
 
 // Here we call `try_block_expr` rather than `block_or_statement`

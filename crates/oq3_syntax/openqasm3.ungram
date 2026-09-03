@@ -140,7 +140,7 @@ Reset =
   'reset' GateOperand
 
 Measure =
-  'measure' qubit:Expr ';'
+  'measure' Expr ('->' Expr)? ';'
 
 // FIXME, args to barrier are more general that this.
 Barrier =

@@ -95,6 +95,16 @@ impl ast::AssignmentStmt {
     }
 }
 
+impl ast::Measure {
+    pub fn qubit(&self) -> Option<ast::Expr> {
+        support::children(self.syntax()).next()
+    }
+
+    pub fn target(&self) -> Option<ast::Expr> {
+        support::children(self.syntax()).nth(1)
+    }
+}
+
 impl ast::HasLoopBody for ast::ForStmt {
     fn loop_body(&self) -> Option<ast::BlockExpr> {
         let mut exprs = support::children(self.syntax());
