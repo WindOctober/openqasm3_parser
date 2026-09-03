@@ -334,8 +334,15 @@ fn expr_bp(
     Some((lhs, BlockLike::NotBlock))
 }
 
-const LHS_FIRST: TokenSet =
-    atom::ATOM_EXPR_FIRST.union(TokenSet::new(&[T![&], T![*], T![!], T![.], T![-], T![_]]));
+const LHS_FIRST: TokenSet = atom::ATOM_EXPR_FIRST.union(TokenSet::new(&[
+    T![&],
+    T![*],
+    T![!],
+    T![~],
+    T![.],
+    T![-],
+    T![_],
+]));
 
 // Handles only prefix and postfix expressions?? Not binary infix?
 fn lhs(p: &mut Parser<'_>, r: Restrictions) -> Option<(CompletedMarker, BlockLike)> {

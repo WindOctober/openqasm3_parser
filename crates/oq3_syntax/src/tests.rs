@@ -339,6 +339,17 @@ a = b ^ c;
 }
 
 #[test]
+fn parse_bitwise_not_expression_test() {
+    let code = r##"
+bit a;
+bit b;
+a = ~b;
+    "##;
+    let parse = SourceFile::parse(code);
+    assert!(parse.ok().is_ok());
+}
+
+#[test]
 fn parse_assignment_invalid_lhs_test() {
     let parse = SourceFile::parse("x + y = 3;");
     assert_eq!(parse.errors.len(), 1);
