@@ -235,7 +235,8 @@ fn current_op(p: &Parser<'_>) -> (u8, SyntaxKind, Associativity) {
         T![+] if p.at(T![+=])  => (1,  T![+=],  Right),
         // `++` is the concatenation op and should have some low value for bp.
         T![+] if p.at(T![++])  => (2,  T![++],  Left),
-        T![*] if p.at(T![**])  => (7,  T![**],  Left),
+        // Power binds above unary operators and associates to the right.
+        T![*] if p.at(T![**])  => (13, T![**], Right),
         T![+]                  => (10, T![+],   Left),
         T![^] if p.at(T![^=])  => (1,  T![^=],  Right),
         T![^]                  => (7,  T![^],   Left),
@@ -361,8 +362,9 @@ fn lhs(p: &mut Parser<'_>, r: Restrictions) -> Option<(CompletedMarker, BlockLik
             return Some((cm, block_like));
         }
     };
-    // parse the interior of the unary expression
-    expr_bp(p, None, r, 255);
+    // Unary binds below power but above multiplication. In particular,
+    // -a ** b is -(a ** b), while a ** -b still accepts a unary exponent.
+    expr_bp(p, None, r, 12);
     let cm = m.complete(p, kind);
     Some((cm, BlockLike::NotBlock))
 }
